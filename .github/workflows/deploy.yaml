@@ -1,0 +1,31 @@
+name: Build y despliegue a Firebase Hosting
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy-angular:
+    runs-on: ubuntu-latest
+    container: node:18-alpine
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configuración de NodeJS
+        uses: actions/setup-node@master
+        with:
+          node-version: '18.x'
+
+      - name: Instalación de dependencias con NPM
+        run: npm install
+
+      - name: Build de la aplicación
+        run: npm run build
+
+      - name: Despliegue a Firebase Hosting
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
